@@ -1,0 +1,383 @@
+<%-- 
+    Document   : attributesImageTable
+    Created on : Jan 11, 2016, 4:07:09 PM
+    Author     : aurea
+--%>
+
+
+<%@page import="color.BTC"%>
+<%@page import="dataMaker.ClusteringNode"%>
+<%@page import="dataMaker.ClusteringTree"%>
+<%@page import="projection.FastmapProjection"%>
+<%@page import="projection.IDMAPProjection"%>
+<%@page import="projection.ForceSchemeProjection2D"%>
+<%@page import="projection.ProjClusProjection"%>
+<%@page import="trees.kdtree.KDTree"%>
+<%@page import="trees.kdtree.KDData"%>
+<%@page import="trees.kdtree.Point2D"%>
+<%@page import="utils.Measures"%>
+<%@page import="projection.LSPProjection2D.ControlPointsType"%>
+<%@page import="projection.LSPProjection2D"%>
+<%@page import="utils.Util"%>
+<%@page import="matrix.pointsmatrix.DenseMatrix"%>
+<%@page import="color.AureaComplete"%>
+<%@page import="color.HeatedObject"%>
+<%@page import="utils.ColorScale"%>
+<%@page import="clustering.SilhouetteCoefficient"%>
+<%@page import="clustering.BKmedoids"%>
+<%@page import="clustering.BKmeans"%>
+<%@page import="clustering.Kmedoids"%>
+<%@page import="matrix.pointsmatrix.AbstractMatrix"%>
+<%@page import="clustering.Kmeans"%>
+<%@page import="clustering.Xmeans"%>
+<%@page import="clustering.Clustering"%>
+<%@page import="dataMaker.Matrix"%>
+<%@page import="java.awt.Color"%>
+<%@page import="dataMaker.TimeInterval"%>
+<%@page import="java.util.ArrayList"%>
+
+
+
+<%
+    ArrayList<TimeInterval> listTimeIntervals = (ArrayList<TimeInterval>) session.getAttribute("listTimeIntervalsData");
+    ClusteringTree clusteringTree = (ClusteringTree) session.getAttribute("clusteringTree");
+    ClusteringNode currentClusteringNode = (ClusteringNode) session.getAttribute("currentClusteringNode");
+    String aggregationFunction = (String) session.getAttribute("aggregationFunction");
+    String valueUnitTimeInterval = (String) session.getAttribute("valueUnitTimeInterval");
+    String unitTimeInterval = (String) session.getAttribute("unitTimeInterval");
+    String explorationOption = request.getParameter("explorationOption");
+    String seeallBool = request.getParameter("seeallbool");
+
+    if (listTimeIntervals != null) {
+
+        ArrayList<Integer> currentListTimeMatricesId = (ArrayList<Integer>) session.getAttribute("currentListTimeMatricesId");
+        ArrayList<TimeInterval> currentTimeMatrices = new ArrayList<TimeInterval>();
+
+        if (clusteringTree == null) {
+            currentClusteringNode = clusteringTree.getRoot();
+            session.setAttribute("currentClusteringNode", currentClusteringNode);
+        } else {
+            if (explorationOption != null) {
+                if (explorationOption.equals("parent")) {
+                    ClusteringNode previousClusteringNode = currentClusteringNode;
+                    currentClusteringNode = currentClusteringNode.getParent();
+                    if (currentClusteringNode == null) {
+                        currentClusteringNode = previousClusteringNode;
+                    }
+                } else {
+                    if (explorationOption.equals("root")) {
+                        ClusteringNode previousClusteringNode = currentClusteringNode;
+                        currentClusteringNode = clusteringTree.getRoot();
+                        if (currentClusteringNode == null) {
+                            currentClusteringNode = previousClusteringNode;
+                        }
+                    } else {
+
+                        currentClusteringNode = currentClusteringNode.getListChildNodes().get(Integer.valueOf(explorationOption));
+
+                    }
+                }
+                session.setAttribute("currentClusteringNode", currentClusteringNode);
+            }
+        }
+
+        if (currentListTimeMatricesId == null) {
+            currentClusteringNode = clusteringTree.getRoot();
+            session.setAttribute("currentClusteringNode", currentClusteringNode);
+            currentListTimeMatricesId = new ArrayList<Integer>();
+            ArrayList<Integer> listItem = new ArrayList<Integer>();
+            if (seeallBool != null && seeallBool.equals("true")) {
+                listItem = currentClusteringNode.getListMembers();
+            } else {
+                listItem = currentClusteringNode.getListMedoids();
+            }
+            for (int i = 0; i < listItem.size(); i++) {
+                currentListTimeMatricesId.add(listItem.get(i));
+                currentTimeMatrices.add(listTimeIntervals.get(listItem.get(i)));
+            }
+
+            session.setAttribute("currentListTimeMatricesId", currentListTimeMatricesId);
+        } else {
+            ArrayList<Integer> listItem = new ArrayList<Integer>();
+            if (seeallBool != null && seeallBool.equals("true")) {
+                listItem = currentClusteringNode.getListMembers();
+            } else {
+                listItem = currentClusteringNode.getListMedoids();
+            }
+            for (int i = 0; i < listItem.size(); i++) {
+                currentTimeMatrices.add(listTimeIntervals.get(listItem.get(i)));
+            }
+        }
+
+        if (currentTimeMatrices.size() > 0) {
+            int numCols = 5;
+
+            if (numCols > currentTimeMatrices.size()) {
+                numCols = currentTimeMatrices.size();
+            }
+
+            int numRows = (int) Math.ceil(currentTimeMatrices.size() * 1.0 / numCols);
+
+            Color[] colorScaleBackground = (Color[]) session.getAttribute("colorScaleBackground");
+            Color[] colorScaleCell = (Color[]) session.getAttribute("colorScaleCell");
+            int sizeCellWidth = (int) Math.ceil(300 / currentTimeMatrices.get(0).getMatrix().getCols()) + 3;
+            int sizeCellHeight = (int) Math.ceil(270 / currentTimeMatrices.get(0).getMatrix().getRows()) + 3;
+
+            if (sizeCellWidth < 5) {
+                sizeCellWidth = 5;
+            }
+            if (sizeCellHeight < 5) {
+                sizeCellHeight = 5;
+            }
+
+            int sizeTable = sizeCellWidth * currentTimeMatrices.get(0).getMatrix().getCols() + 10;
+            if (sizeTable < 300) {
+                sizeTable = 300;
+            }
+
+            Color[] colorScaleBorder = (new BTC()).getColorScale();
+%>
+
+
+<div id="HierarchicalAttributeMatricesContent">
+
+    <table  id="timeMatricesTable" style="text-align: center;margin:0 auto; margin:auto; ">
+        <br>
+        <tr>
+            <td colspan="2">
+                <table style="text-align: center; margin:0 auto; margin:auto; width: <%=(sizeTable + 100)%>px;">
+                    <tr>
+                        <td  colspan="2">Cell Value</td>
+                    </tr>
+                    <tr>
+                        <td  colspan="2">
+                            <table border="0" style=" text-align: center; background-color:  #ffffff; width:900px;   margin:0 auto; margin:auto;" >
+                                <tr>
+                                    <td>(0)</td>
+                                    <%                Color colorScale = Color.WHITE;
+                                        for (int i = colorScaleCell.length - 1; i >= 0; i--) {
+                                            colorScale = colorScaleCell[i];
+                                    %>
+                                    <td  style="background-color: rgb(<%out.print(colorScale.getRed());%>,<%out.print(colorScale.getGreen());%>,<%out.print(colorScale.getBlue());%>);color: rgb(<%out.print(colorScale.getRed());%>,<%out.print(colorScale.getGreen());%>,<%out.print(colorScale.getBlue());%>);"
+                                         width="4px" height="6px"></td>
+                                    <%
+                                        }
+                                    %>
+                                    <td>(1)</td>
+                                </tr>
+                            </table>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  colspan="2">Missing Data(%)</td>
+                    </tr>
+                    <!--tr>
+                        <td  colspan="2">
+                            <table border="0" style=" text-align: center; background-color:  #ffffff; width:900px;   margin:0 auto; margin:auto;" >
+                                <tr>
+                                    <td>(0%)</td>
+                    <%  //              Color colorMissingData = Color.WHITE;
+                        // for (int i = 0; i < colorScaleBorder.length; i++) {
+                        //    colorMissingData = colorScaleBorder[i];
+                    %>
+                    <td  style="background-color: rgb(<%//out.print(colorMissingData.getRed());%>,<%//out.print(colorMissingData.getGreen());%>,<%//out.print(colorMissingData.getBlue());%>);color: rgb(
+                    <%//out.print(colorScale.getRed());%>,<%//out.print(colorScale.getGreen());%>,<%//out.print(colorScale.getBlue());%>);"
+                                         width="4px" height="6px"></td>
+                    <%
+                        // }
+                    %>
+                                                            <td>(100%)</td>
+                                                        </tr>
+                                                    </table>
+                                                    <br>
+                                                </td>
+                                            </tr-->
+                    <tr>
+                   
+                        <td   colspan="2">
+                            <table style="margin:0 auto; margin:auto;">
+                                <tr>
+                                    <td colspan="3"> <input type="text" id="missingDataThresholdInput" readonly value="0%" style="border:0;text-align: center;">
+                                    </td>
+
+                                </tr>
+                                <tr><td>0</td>
+                                    <td>
+                                        <input type="range" id="missingDataSlider" name="missingDataSlider" value="100" min="0" max="100"  style="width: 500px;"
+                                               oninput="updateMissingDataThresholdHierachical('<%=currentTimeMatrices.size()%>');" onchange="updateMissingDataThresholdHierachical('<%=currentTimeMatrices.size()%>');"></td>
+                                    <!--td style="width: 10px;"></td><td> &nbsp<div id="missingDataSlider" style="width: 500px" ></div>&nbsp</td><td style="width: 10px;"></td-->
+                                    <td>100</td>
+                                </tr>
+                            </table>
+                        </td>
+                    <tr>
+
+
+                    <tr>
+                        <td>
+                            <table style="margin:0 auto; margin:auto;" border="1">
+                                <%
+                                    int countMatrices = 0;
+                                    for (int i = 0; i < numRows; i++) {
+
+                                %>  
+                                <tr>
+                                    <%  for (int j = 0; j < numCols && countMatrices < currentTimeMatrices.size(); j++) {
+
+                                            String nameAttribute = currentTimeMatrices.get(countMatrices).getNameAttribute();
+                                            Color colorBackground = colorScaleBackground[currentTimeMatrices.get(countMatrices).getIndexColorCluster()];
+                                            String fontColor = utils.Util.getColorByLuminance(colorBackground);
+                                            ArrayList<Integer> listSubMembers = new ArrayList<Integer>();
+                                            if (currentClusteringNode.getListChildNodes() != null && (currentClusteringNode.getListChildNodes().size() > countMatrices)) {
+                                                listSubMembers = currentClusteringNode.getListChildNodes().get(countMatrices).getListMembers();
+                                            }
+
+                                            String entireListChildren = listSubMembers.size() + ": \n";
+                                            for (int p = 0; p < listSubMembers.size(); p++) {
+                                                entireListChildren += listTimeIntervals.get(listSubMembers.get(p)).getNameAttribute() + "\n";
+                                            }
+                                             int borderWidth = 5;//10-
+                                       
+
+                                    %>
+                                    <td style=" background-color: rgb(<%out.print(colorBackground.getRed());%>,<%out.print(colorBackground.getGreen());%>,<%out.print(colorBackground.getBlue());%>); width: <%=sizeTable%>px;text-align:center;" >
+
+
+                                        <table  id="matrix<%=countMatrices%>" style="text-align: center; border-style: solid;border-width: <%=borderWidth%>px; width: <%=sizeTable%>px;border-color:#A8A8A8;" >
+                                            <tr >
+                                                <th  style='font-weight:bold;vertical-align:top;font-family:Arial, sans-serif;font-size:14px;color:<%out.print(fontColor);%>;text-align:center;' colspan="1" >
+                                                    Cluster# <%=currentTimeMatrices.get(countMatrices).getCluster()%>
+
+                                                    - <%out.print(nameAttribute);%> 
+
+                                                    <%if (seeallBool == null || !seeallBool.equals("true")) {%>
+                                                    <button  style="color: black;" type="button"  onclick="exploreHierarchicalTimeMatrices('<%=countMatrices%>', 'false');" >+</button>
+                                                    <%}%>
+                                                    <button style="color: black;" type="button"  onclick="exploreHierarchicalTimeMatrices('<%="parent"%>', 'false');">-</button>
+                                                    <button style="color: black;" type="button"  onclick="exploreHierarchicalTimeMatrices('<%="root"%>', 'false');">root</button>
+                                                    <button  style="color: black;" type="button" title="<%=entireListChildren%>"  onclick="exploreHierarchicalTimeMatrices('<%=countMatrices%>', 'true');">see</button>
+                                                </th>
+                                            </tr>
+                                            <tr >
+                                                <td  style='font-weight:bold;vertical-align:top;font-family:Arial, sans-serif;font-size:13px;color:<%out.print(fontColor);%>;text-align:center;' colspan="1" >
+                                                    <%out.print(currentTimeMatrices.get(countMatrices).getNameSource() + " " + currentTimeMatrices.get(countMatrices).getValueSource());%></td>
+                                            </tr>
+                                            <tr >
+                                                <td  style='font-weight:bold;vertical-align:top;font-family:Arial, sans-serif;font-size:12px;color:<%out.print(fontColor);%>;text-align:center;' colspan="1" >
+                                                    <%out.print(currentTimeMatrices.get(countMatrices).getInitDate() + " - " + currentTimeMatrices.get(countMatrices).getEndDate() + " : "
+                                                                + currentTimeMatrices.get(countMatrices).getInitHour() + " - " + currentTimeMatrices.get(countMatrices).getEndHour());%></td>
+                                            </tr>
+
+                                            <% Matrix matrixTmp = currentTimeMatrices.get(countMatrices).getMatrix();
+                                                ArrayList<String> listX = currentTimeMatrices.get(countMatrices).getListLabelsX();
+                                                ArrayList<String> listY = currentTimeMatrices.get(countMatrices).getListLabelsY();%>
+                                            <tr >
+                                                <td  style='font-weight:bold;vertical-align:top;font-family:Arial, sans-serif;font-size:12px;
+                                                     color:<%out.print(fontColor);%>;text-align:center;' colspan="1" >
+                                                    <%out.print("Min value: " + matrixTmp.getMinValue() + " - Max value: " + matrixTmp.getMaxValue());%></td>
+                                            </tr>
+                                            <tr >
+                                                <td  style='font-weight:bold;vertical-align:top;font-family:Arial, sans-serif;font-size:12px;color:<%out.print(fontColor);%>;text-align:center;' colspan="1" >
+                                                    <%out.print(" Missing data: " + currentTimeMatrices.get(countMatrices).getOriginalMissingDataImpact() + "%");%></td>
+                                            </tr>
+                                            <tr >
+                                                <td  style='font-weight:bold;vertical-align:top;font-family:Arial, sans-serif;font-size:12px;color:<%out.print(fontColor);%>;text-align:center;' colspan="1" >
+                                                    <%out.print(" With interpolation: " + currentTimeMatrices.get(countMatrices).getInterpolatedMissingDataImpact() + "%");%></td>
+                                                <input id="missingData<%=countMatrices%>" hidden="hidden" value="<%=currentTimeMatrices.get(countMatrices).getOriginalMissingDataImpact()%>">
+                                            </tr>
+                                            <tr><td style="text-align: center;" ><table style='font-size:3px; border-style:solid; margin:0 auto; margin:auto;'  >
+                                                        <%
+
+                                                            for (int mRow = 0; mRow < matrixTmp.getRows(); mRow++) {%>
+                                                        <tr><%for (int mCol = 0; mCol < matrixTmp.getCols(); mCol++) {
+                                                                int positionColorCell = (int) matrixTmp.getValue(mRow, mCol);
+                                                                Double originalValue = Double.NaN;
+                                                                if (matrixTmp.getOriginalValue(mRow, mCol) != Double.NEGATIVE_INFINITY && matrixTmp.getValue(mRow, mCol) != Double.NEGATIVE_INFINITY) {
+                                                                    originalValue = matrixTmp.getOriginalValue(mRow, mCol);
+                                                                }
+
+                                                                boolean interpolatedFlag = (boolean) matrixTmp.getFlag(mRow, mCol);
+                                                                Color colorCell = Color.WHITE;
+                                                                if (positionColorCell >= 0) {
+                                                                    colorCell = colorScaleCell[255 - positionColorCell];
+                                                                } else {
+                                                                    colorCell = Color.gray;
+                                                                }
+
+                                                                if (originalValue.isNaN() && colorCell != Color.gray) {
+
+                                                                    Double valueInterpolated = Measures.minmax((positionColorCell) * 1.0, 0.0, 255.0, matrixTmp.getMinValue(), matrixTmp.getMaxValue());
+                                                                    originalValue = (Math.round(valueInterpolated * 100.0)) / 100.0;
+                                                                }
+                                                                int red = colorCell.getRed();
+                                                                int green = colorCell.getGreen();
+                                                                int blue = colorCell.getBlue();
+                                                            %>
+                                                            <td title="<%out.print(listY.get(mRow) + "\n" + listX.get(mCol) + " \n" + aggregationFunction + " value: " + originalValue + " in " + valueUnitTimeInterval + " " + unitTimeInterval);%>"   
+                                                                style="background-color: rgb(<%out.print(red);%>,<%out.print(green);%>,<%out.print(blue);%>); 
+                                                                color:rgb(<%out.print(red);%>,<%out.print(green);%>,<%out.print(blue);%>); 
+                                                                <%if (interpolatedFlag == true) {
+                                                                %>
+                                                                border: 1px solid red;
+                                                                <%}%>" 
+                                                                width="<%out.print(sizeCellWidth);%>px" height="<%out.print((sizeCellHeight));%>px">
+
+                                                            </td>
+                                                            <% }%>
+                                                        </tr>
+                                                        <% }%>
+                                                    </table></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <%     countMatrices++;
+                                    %>
+
+                                    <% } %>
+                                </tr>
+                                <%
+                                    }%>
+                            </table>
+                        </td>
+
+                    </tr>
+                     <tr style="height: 10px;">
+                     </tr>
+                    <tr>
+                        <td style="height: 10px;color:black;background:black;">
+                            
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        
+                      
+                        
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+<%}
+} else {%><br>
+<br>
+<table style="text-align: center; margin:0 auto; margin:auto;">
+    <tr>
+        <td>
+
+
+            <div class="col-sm-12">
+
+                Error with the query.
+            </div>
+        </td>
+    </tr>
+</table>
+
+<%  }%>

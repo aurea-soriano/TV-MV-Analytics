@@ -1,0 +1,571 @@
+
+<div class="container-fluid" style="width:750px; height: 900px;   margin:0 auto; margin:auto;">
+    <div class="row">
+
+        <div class="col-sm-2">
+            <div class="well" style="height: 870; width: 280px; position:relative; left: 2px;">
+
+
+                <div class="titled-box">
+                    <div id="titleAttributes"><b>Attributes:</b></div>
+                    <div id="vars">
+                        <div id="selectedVars" class="form-group shiny-input-checkboxgroup shiny-input-container shiny-bound-input">
+
+
+
+
+
+
+
+                            <label>Select Frequency:</label><br>
+
+                            <select name="selectByFrequencyRadio" id="selectByFrequencyRadio"  style="width: 135px" onchange="selectByFrequency();">
+                                <option value="withoutFrequency" <%                                                 if (frequencyRadio != null && frequencyRadio.equals("withoutFrequency")) {%>
+                                        selected
+                                        <%}
+                                        %>>No Frequency</option>
+                                <option value="allFrequencies"<%
+                                    if (frequencyRadio != null && frequencyRadio.equals("allFrequencies")) {%>
+                                        selected
+                                        <%}%>
+                                        >All frequencies</option>
+                                <option value="l1"<%
+                                    if (frequencyRadio != null && frequencyRadio.equals("l1")) {%>
+                                        selected
+                                        <%}%>
+                                        >L1 Frequency</option>
+                                <option value="l2"<%
+                                    if (frequencyRadio != null && frequencyRadio.equals("l2")) {%>
+                                        selected
+                                        <%}%>
+                                        >L2c_e5a Frequency</option>
+                                <option value="l5"<%
+                                    if (frequencyRadio != null && frequencyRadio.equals("l5")) {%>
+                                        selected
+                                        <%}%>
+                                        >L5_e5b Frequency</option>
+                            </select>
+
+                            <label>
+                                <input type="checkbox" name="selectedAllAttributesCheckbox"  id="labelAllAttributesCheckbox"   value="SelectAllAttributes" onclick="checkAllAttributes(this);" >
+                                <span>Select All Attributes</span>
+                            </label>
+
+                            <div style="width:230px;height:760px;overflow:auto;">
+
+                                <%  for (int i = 0; i < listCategories.size(); i++) {%>
+                                <div><b><%out.print(listCategories.get(i) + ": ");%></b></div>
+                                <%
+                                    for (int j = 0; j < listAttributes.get(i).size(); j++) {
+                                        String nameAttribute = listAttributes.get(i).get(j);
+                                %>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="selectedAttributesCheckbox" onchange="countSelectedAttributes();
+                                                clearMessage();"value="<%=nameAttribute%>"
+                                               <%if (selectedAttributesArray != null && Arrays.asList(selectedAttributesArray).contains(nameAttribute)) {%>
+                                               checked  
+                                               <%}%>
+
+                                               >
+                                        <span><%out.print(listAttributes.get(i).get(j));%></span>
+                                    </label>
+                                </div>
+                                <%}
+                                    }
+                                %>
+                            </div>
+                            <label> <input style="width:230px;" id="numberSelectedAttributesText" type="text" disabled
+                                           <% if (messageNumberSelectedAttributes != null) {
+                                           %>
+                                           value="<%=messageNumberSelectedAttributes%>"
+                                           <%}
+                                           %>
+                                           ></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--div class="col-sm-7">
+            <div id="visual_inspector" class="shiny-bound-output" style="height: 720px; width: 1380px; position:relative;left:-65px;overflow:auto;">
+
+
+            </div>
+        </div-->
+        <div class="col-sm-2">
+            <div class="well" style="height: 870px; width: 450px; position:relative; left:170px;" >
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="titled-box">
+                            <div ><b>Settings:</b></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--div class="row">
+                    <div class="col-sm-12">
+                        <div class="titled-box">
+                            <div >Plot:</div>
+                            <div id="content">
+                                <input type="radio" id="separatelyPlotButton" name="optionSeparatelyTogether" value="Separately" class="shiny-bound-input" checked> Separately
+                                <br>
+                                <input type="radio" id="togetherPlotButton"  name="optionSeparatelyTogether" value="Together" class="shiny-bound-input"> Together
+
+                            </div>
+                        </div>
+                    </div>
+                </div-->
+
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="titled-box">
+                            <table style="width: 280px;">
+                                <tr>
+                                    <td style="width:25%; text-align:center; "> <div ><b>From:</b></div></td>
+                                    <td style="width:25%">     <div id="content">
+
+                                            <input type=date  id='fromDate' name='fromDate'  min='<%out.print(minTimeValue);%>'
+                                                   max='<%out.print(maxTimeValue);%>' onchange='clearMessage();'  
+                                                   <%
+                                                       if (fromDateStr != null) {%>
+                                                   value="<%out.print(fromDateStr);%>"  
+                                                   <% }
+
+                                                   %>
+                                                   >
+                                        </div></td> 
+                                    <td style="width:25%; text-align:center; ">       <div ><b>To:</b></div></td>
+                                    <td style="width:25%"> 
+
+                                        <input type=date id='toDate' min='<%out.print(minTimeValue);%>'
+                                               max='<%out.print(maxTimeValue);%>' onchange='clearMessage();' 
+                                               <%
+                                                   if (toDateStr != null) {%>
+                                               value="<%out.print(toDateStr);%>"  
+                                               <% }
+
+                                               %>
+
+                                               ></td>
+
+                                </tr>
+
+                                <tr>
+                                    <td > <div >
+                                            <br>
+                                            <b>Time interval:</b></div></td>
+                                    <td colspan='3' > 
+                                        <span id="time">0:00  - 23:59 </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"> 
+                                        <br>
+                                        <table>
+                                            <tr>
+                                                <td><div id="slider-range" style='width:270px'></div></td><td>&nbsp; &nbsp; <input type="submit" name="scheduleSubmit" value="+" id="scheduleSubmit" > <input type="submit" name="removeSubmit" value="-" id="removeSubmit" ></td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="4" style='text-align:center;'> 
+
+
+                                        <span id="SlideMax"></span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="4" style='text-align:center;'>     
+                                        <select name="listIntervalsSelect" id="listIntervalsSelect" multiple size="3" style="width: 170px;" onchange="clearMessage();">
+
+                                            <%                                                 if (intervalTimesArray != null) {
+                                                    for (int i = 0; i < intervalTimesArray.length; i++) {
+
+                                            %>
+                                            <option value="<%=intervalTimesArray[i]%>"><%=intervalTimesArray[i]%></option>
+                                            <%}
+                                                } %>
+
+
+                                        </select>
+
+                                        <script type="text/javascript">
+                                            var startTime;
+                                            var endTime;
+                                            $("#slider-range").slider({
+                                                range: true, min: 0, max: 1440, values: [0, 240], step: 60, slide: slideTime, change: checkMax
+                                            });
+                                            function slideTime(event, ui) {
+                                                var val0 = $("#slider-range").slider("values", 0),
+                                                        val1 = $("#slider-range").slider("values", 1),
+                                                        // minutes0 = parseInt(val0 % 60, 10),
+                                                        hours0 = parseInt(val0 / 60 % 24, 10),
+                                                        //minutes1 = parseInt(val1 % 60, 10),
+                                                        hours1 = parseInt(val1 / 60 % 24, 10);
+
+                                                startTime = getTime(hours0);
+                                                endTime = getTime(hours1);
+                                                $("#time").text(startTime + ':00 - ' + endTime + ':00');
+                                            }
+                                            function getTime(hours) {
+                                                var time = null;
+                                                // minutes = minutes + "";
+                                                // if (hours < 12) {
+                                                //     time = "AM";
+                                                // }
+                                                // else {
+                                                //     time = "PM";
+                                                // }
+                                                // if (hours == 0) {
+                                                //     hours = 12;
+                                                // }
+                                                // if (hours > 12) {
+                                                //    hours = hours - 12;
+                                                //}
+                                                // if (minutes.length == 1) {
+                                                //     minutes = "0" + minutes;
+                                                // }
+                                                return hours;//+ ":" + minutes + "  ";
+                                            }
+
+                                            function checkMax() {
+                                                var size = $("#slider-range").slider("values", 1) - $("#slider-range").slider("values", 0);
+                                                if (size >= 1475) {
+                                                    $("#slider-range div")
+                                                            .addClass("ui-state-error")
+                                                            .removeClass("ui-widget-header");
+                                                    $("#scheduleSubmit")
+                                                            .attr("disabled", "disabled")
+                                                            .addClass("ui-state-disabled")
+                                                            .removeClass("ui-state-default");
+                                                    $("#SlideMax").text("Cannot be more than 24 hours");
+                                                }
+                                                else {
+                                                    if (size < 0) {
+                                                        $("#slider-range div")
+                                                                .addClass("ui-state-error")
+                                                                .removeClass("ui-widget-header");
+                                                        $("#scheduleSubmit")
+                                                                .attr("disabled", "disabled")
+                                                                .addClass("ui-state-disabled")
+                                                                .removeClass("ui-state-default");
+                                                        $("#SlideMax").text("Cannot be less than 0 hours");
+                                                    }
+                                                    else {
+                                                        $("#slider-range div")
+                                                                .addClass("ui-widget-header")
+                                                                .removeClass("ui-state-error");
+                                                        $("#scheduleSubmit")
+                                                                .removeAttr("disabled")
+                                                                .addClass("ui-state-default")
+                                                                .removeClass("ui-state-disabled");
+                                                        $("#SlideMax").text("");
+                                                    }
+                                                }
+                                            }
+
+                                            $("#scheduleSubmit").on('click', function () {
+                                                // Make sure it's not a duplicate; if so, don't add
+                                                var match = false;
+                                                var valueInterval = startTime + ':00 - ' + endTime + ':00';
+                                                $('#listIntervalsSelect option').each(function () {
+                                                    if (valueInterval === this.value)
+                                                        match = true;
+                                                });
+                                                if (match)
+                                                {
+                                                    alert("This time interval exists.");
+                                                    return false;
+                                                }
+
+                                                // Add the number to the <select>
+                                                $('#listIntervalsSelect').append(
+                                                        $('<option></option>').html(valueInterval).val(valueInterval)
+                                                        );
+
+                                            });
+                                            $("#removeSubmit").on('click', function () {
+                                                $('#listIntervalsSelect :selected').remove();
+
+                                            });
+                                            slideTime();
+                                        </script>
+
+
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="titled-box">
+                            <table style="width: 320px; ">
+
+                                <tr>  
+                                    <td style="width:50%; text-align: right; " >
+                                        <b>Unit:</b>
+                                    </td>
+                                    <td style="width:50%; ">
+                                        <input name="valueUnitTimeInterval" id="valueUnitTimeInterval" size="4"  maxlength="4"  <%
+                                            if (valueUnitTimeInterval != null) {%>
+                                               value="<%=valueUnitTimeInterval%>"
+                                               <%}
+                                               %> onchange="clearMessage();" style="width: 40px"
+
+                                               onkeypress='return event.charCode >= 48 && event.charCode <= 57'> 
+                                        <select name="selectUnitTimeInterval" id="selectUnitTimeInterval"    style="width: 90px" onchange="clearMessage();
+                                                controlValueUnitTimeInterval();">
+                                            <option value="minute"  <%
+                                                if (unitTimeInterval != null && unitTimeInterval.equals("minute")) {%>
+                                                    selected
+                                                    <%}
+                                                    %>>minute(s)</option>
+                                            <option value="hour"  <%
+                                                if (unitTimeInterval != null && unitTimeInterval.equals("hour")) {%>
+                                                    selected
+                                                    <%}
+                                                    %>>hour(s)</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>  
+                                    <td style="width:50%; text-align: right; ">
+                                        <b>Elevation</b>
+                                    </td>
+                                    <td style="width:50%; ">
+                                        <input name="valueElevation" id="valueElevation" size="4"  maxlength="4"  <%
+                                            if (valueElevation != null) {
+                                               %>
+                                               value="<%=valueElevation%>"
+                                               <%}
+                                               %> onchange="clearMessage();" style="width: 40px"
+
+                                               onkeypress='return (event.charCode >= 48 && event.charCode <= 57)'> 
+                                    </td>
+                                </tr>
+
+
+                                <tr>  
+                                    <td style="width:50%; text-align: right; ">
+                                        <div id="titleListStations" ><b>Station:</b></div>
+                                    </td>
+                                    <td style="width:50%; ">
+                                        <select name="selectListStations" id="selectListStations"    style="width: 80px" onchange="clearMessage();">
+                                            <option value="5">5</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr> 
+
+                                    <td style="width:50%; text-align: right; ">  <div id="titleListSatellite" ><b>Satellite:</b></div></td>
+                                    <td style="width:50%; ">
+                                        <!--select name="selectListSatellites" id="selectListSatellites"   multiple style="width: 80px" onchange="clearMessage();">
+                                         
+                                        </select-->
+                                        <select multiple="multiple" id="selectListSatellites" name="selectListSatellites"  style="color: white">
+
+                                            <% for (int i = 1; i <= 32; i++) {
+                                            %>
+                                            <option value="<%out.print(i);%>"  <%
+                                                if (satelliteStr != null && Arrays.asList(satellitesArray).contains(String.valueOf(i))) {%>
+                                                    selected
+                                                    <%}
+                                                    %>
+
+                                                    ><%out.print(i);%></option>
+                                            <%}
+                                            %>
+                                        </select>
+                                        <script>
+                                            $("#selectListSatellites").multipleSelect({
+                                                width: 140,
+                                                multiple: true,
+                                                multipleWidth: 55
+
+                                            });
+                                        </script>
+
+                                    </td>
+                                </tr>
+
+                                <tr> 
+                                    <td style="width:50%; text-align: right; "> 
+                                        <div id="titleOption"><b>Option:</b></div>
+                                    </td>
+
+                                    <td style="width:50%;  "> 
+                                        <select name="selectOption" id="selectOption"    style="width: 135px" onchange="clearMessage();">
+                                            <option value="max"  <%
+                                                if (option != null && option.equals("max")) {%>
+                                                    selected
+                                                    <%}
+                                                    %>>max</option>
+                                            <option value="avg" <%
+                                                if (option != null && option.equals("avg")) {%>
+                                                    selected
+                                                    <%}
+                                                    %>>avg</option>
+                                             <option value="min" <%
+                                                if (option != null && option.equals("min")) {%>
+                                                    selected
+                                                    <%}
+                                                    %>>min</option>
+                                        </select>
+
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td style="width:50%; text-align: right; "> 
+                                        <b>Clustering:</b>
+                                    </td>
+                                    <td style="width:50%;  "> 
+                                        <select name="selectClustering" id="selectClustering"    style="width: 135px" onchange="filterClusteringSelection();">
+                                            <option value="Xmeans" <%
+                                                if (clustering != null && clustering.equals("Xmeans")) {%>
+                                                    selected
+                                                    <%}
+                                                    %>>Xmeans</option>
+                                            <option value="Kmeans"<%
+                                                if (clustering != null && clustering.equals("Kmeans")) {%>
+                                                    selected
+                                                    <%}%>
+                                                    >Kmeans</option>
+                                            <option value="BKmeans"<%
+                                                if (clustering != null && clustering.equals("BKmeans")) {%>
+                                                    selected
+                                                    <%}%>
+                                                    >BKmeans</option>
+
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td style="width:50%; text-align: right; "> 
+                                        <b>#Clusters:</b>
+                                    </td>
+                                    <td style="width:50%;  "> 
+                                        <select name="selectNumberClusters" id="selectNumberClusters"    style="width: 135px" onchange="clearMessage();" >
+                                            <% for (int i = 0; i <= 10; i++) {
+                                            %>
+                                            <option value="<%out.print(i);%>"  <%
+                                                if (numberClusters != null && Integer.valueOf(numberClusters) == i) {%>
+                                                    selected
+                                                    <%}
+                                                    %>
+
+                                                    ><%out.print(i);%></option>
+                                            <%}
+                                            %>
+                                        </select>
+
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td style="width:50%; text-align: right; "> 
+                                        <b>Clustering Evaluation:</b>
+                                    </td>
+                                    <td style="width:50%;  "> 
+                                        <input style="width:135px" id="clusteringEvaluationText" name="clusteringEvaluationText" type="text" disabled
+                                               <%if (averageSilhouetteCoefficient != null) {%>value="<%=averageSilhouetteCoefficient%>"<%}%>
+                                               >
+
+                                    </td>
+                                </tr>
+                                <!--tr>
+
+                                    <td style="width:50%; text-align: right; "> 
+                                        <b>Projection:</b>
+                                    </td>
+                                    <td style="width:50%;  "> 
+                                        <select name="selectProjection" id="selectProjection"    style="width: 135px" onchange="clearMessage();" >
+                                            <option value="ProjMeansProjection"<%
+                                               // if (nameProjectionTechnique != null && nameProjectionTechnique.equals("ProjMeansProjection")) {%>
+                                                    selected
+                                <%//}%>
+                                >ProjMeans-AureaSoriano</option>
+                        <option value="ProjClusProjection"<%
+                            // if (nameProjectionTechnique != null && nameProjectionTechnique.equals("ProjClusProjection")) {%>
+                                selected
+                                <%//}%>
+                                >ProjClusProjection-Paulovich</option>
+                        <option value="TSneProjection" <%
+                            //if (nameProjectionTechnique != null && nameProjectionTechnique.equals("TSneProjection")) {%>
+                                selected
+                                <%//}
+                                %>>TSne -Maaten</option>
+                        <option value="FastMapProjection" <%
+                                               // if (nameProjectionTechnique != null && nameProjectionTechnique.equals("FastMapProjection")) {%>
+                                selected
+                                <%//}
+                                %>>FastMap-Faloutsos</option>
+                        <option value="ForceSchemeProjection" <%                                               // if (nameProjectionTechnique != null && nameProjectionTechnique.equals("ForceSchemeProjection")) {%>
+                                selected
+                                <%//}
+                                %>>Force Scheme-Tejada</option>
+                        <option value="IDMAPProjection" <%                                                //if (nameProjectionTechnique != null && nameProjectionTechnique.equals("IDMAPProjection")) {%>
+                                selected
+                                <%//}
+                                %>>IDMAP -Minghim</option>
+
+                    </select>
+
+                </td>
+            </tr-->
+
+
+                            </table>
+                            <br>
+                            <br>
+
+
+
+
+                            <table style="width: 280px; ">
+                                <tr>
+                                    <td colspan='2' style='text-align:center;'>
+                                        <button  id="createVisualizationTimeSeriesButton" name="createVisualizationTimeSeriesButton"  type="button"  onclick="
+                                                createVisualization();"><b>Visualize</b></button>
+                                    </td>
+                                </tr><tr>
+                                    <td colspan='2' style='text-align:center;'>
+
+                                        <%if (selectedAttributesArray != null && flagProcessed != null) {%> 
+                                        <textarea rows="2" cols="50" name="successMessage"  id="successMessage" disabled style="text-align: center; color: black;" >Query was successfully processed.
+                                        </textarea>
+                                        <%} else {
+                                            if (selectedAttributesArray != null && flagProcessed == null) {%> <textarea rows="2" cols="50" name="successMessage"  id="successMessage" disabled style="text-align: center; color: red;" >Satellite without information. 
+                                        </textarea><%} else {%> <textarea rows="2" cols="50" name="successMessage"  id="successMessage" disabled style="text-align: center; color: black;" >
+                                        </textarea><%}
+                                            }%>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

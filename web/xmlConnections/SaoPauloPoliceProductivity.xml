@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+
+<gtsvformat>
+    <connection>
+        <ipserver>127.0.0.1</ipserver>
+        <driver>org.postgresql.Driver</driver>
+        <prefix>jdbc:postgresql://</prefix>
+        <port>5432</port>
+        <database>saopaulopolice</database>
+        <user>aurea</user>
+        <password>arsv</password>
+    </connection>
+    
+    <tablenames>
+        <attributetable>
+            <tablename>saopaulopolice_attribute</tablename>
+            <id>saopaulopolice_attribute_id</id>
+            <name>saopaulopolice_attribute_name</name>
+            <category>saopaulopolice_attribute_category</category>
+        </attributetable>
+        
+        <source1table>
+            <tablename>area</tablename>
+            <id>area_id</id>
+            <name>area_name</name>
+            <description>area_description</description>
+            <category>area_category</category>
+        </source1table>
+ 
+        <source2table>
+            <tablename></tablename>
+            <id></id>
+            <name></name>
+            <description></description>
+        </source2table>
+ 
+        <instancetable>
+            <tablename>instance</tablename>
+            <id>instance_id</id>
+            <source1_id>area_id</source1_id>
+            <source2_id></source2_id>
+            <time_utc>instance_time</time_utc>
+            <threshold_attribute></threshold_attribute>
+            <threshold_attribute_name></threshold_attribute_name>
+            <threshold_attribute_options>
+                <value></value>
+            </threshold_attribute_options>
+        </instancetable>
+    </tablenames>
+    
+    <interface_settings>
+        <time_ranges>
+            <row_unit>year</row_unit>
+        </time_ranges>
+        
+        <time_unit_options>
+            <value>month</value>
+        </time_unit_options>
+        <aggregation_function_options>
+            <value>max</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>avg</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>min</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>std</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>median</value>
+        </aggregation_function_options>
+    </interface_settings>
+    <functions_postgresql>
+        <data_maxfunction_timeinterval_threshold></data_maxfunction_timeinterval_threshold>
+        <data_minfunction_timeinterval_threshold></data_minfunction_timeinterval_threshold>
+        <data_avgfunction_timeinterval_threshold></data_avgfunction_timeinterval_threshold>
+        <data_stdfunction_timeinterval_threshold></data_stdfunction_timeinterval_threshold>
+        <data_medianfunction_timeinterval_threshold></data_medianfunction_timeinterval_threshold>
+        <data_maxfunction_timeinterval>getmaxbytimeinterval</data_maxfunction_timeinterval>
+        <data_minfunction_timeinterval>getminbytimeinterval</data_minfunction_timeinterval>
+        <data_avgfunction_timeinterval>getavgbytimeinterval</data_avgfunction_timeinterval>
+        <data_stdfunction_timeinterval>getstdbytimeinterval</data_stdfunction_timeinterval>
+        <data_medianfunction_timeinterval>getmedianbytimeinterval</data_medianfunction_timeinterval>
+        <data_maxfunction_timeinterval_threshold_forallsource1></data_maxfunction_timeinterval_threshold_forallsource1>
+        <data_minfunction_timeinterval_threshold_forallsource1></data_minfunction_timeinterval_threshold_forallsource1>
+        <data_avgfunction_timeinterval_threshold_forallsource1></data_avgfunction_timeinterval_threshold_forallsource1>
+        <data_stdfunction_timeinterval_threshold_forallsource1></data_stdfunction_timeinterval_threshold_forallsource1>
+        <data_medianfunction_timeinterval_threshold_forallsource1></data_medianfunction_timeinterval_threshold_forallsource1>
+        <data_maxfunction_timeinterval_forallsource1>getmaxbytimeintervalforallareas</data_maxfunction_timeinterval_forallsource1>
+        <data_minfunction_timeinterval_forallsource1>getminbytimeintervalforallareas</data_minfunction_timeinterval_forallsource1>
+        <data_avgfunction_timeinterval_forallsource1>getavgbytimeintervalforallareas</data_avgfunction_timeinterval_forallsource1>
+        <data_stdfunction_timeinterval_forallsource1>getstdbytimeintervalforallareas</data_stdfunction_timeinterval_forallsource1>
+        <data_medianfunction_timeinterval_forallsource1>getmedianbytimeintervalforallareas</data_medianfunction_timeinterval_forallsource1>
+        <data_maxminfunction_timeinterval_threshold></data_maxminfunction_timeinterval_threshold>
+        <data_maxminfunction_timeinterval_threshold_forallsource1></data_maxminfunction_timeinterval_threshold_forallsource1>
+        <data_maxminfunction_timeinterval>getmaxandminvalueclassificationbyintervaldates</data_maxminfunction_timeinterval>
+        <data_maxminfunction_timeinterval_forallsource1>getmaxandminvalueclassificationbyintervaldatesforallsource1</data_maxminfunction_timeinterval_forallsource1>
+        <data_by_timeinterval_threshold></data_by_timeinterval_threshold>
+        <data_by_timeinterval_threshold_forallsource1></data_by_timeinterval_threshold_forallsource1>
+        <data_by_timeinterval>getdatabyintervaldates</data_by_timeinterval>
+        <data_by_timeinterval_forallsource1>getdatabyintervaldatesforallsource1</data_by_timeinterval_forallsource1>
+    </functions_postgresql>
+     <categorization>
+        <name_categorization>By Area</name_categorization>
+        <description>1 | area equal 1 | State\n 2 | area equal 2 | Araçatuba\n 3 | area equal 3 | Bauru\n 4 | area equal 4 | Campinas\n 5 | area equal 5 | Capital\n 6 | area equal 6 | Grande São Paulo\n 7 | area equal 7 | Piracicaba\n 8 | area equal 8 | Presidente Prudente\n 9 | area equal 9 | Ribeirão Preto\n 10 | area equal 10 | Santos\n 11 | area equal 11 | São José do Rio Preto\n 12 | area equal 12 | São José dos Campos\n 13 | area equal 13 | Sorocaba\n</description>
+        <number_conditions>13</number_conditions>
+        <number_classes>13</number_classes>
+        <condition>
+            <symbol1>equal</symbol1>
+            <value1>1</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>1.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>equal</symbol1>
+            <value1>2</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>2.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>3</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>3.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>4</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>4.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>5</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>5.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>6</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>6.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>7</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>7.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>8</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>8.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>9</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>9.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>10</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>10.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>11</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>11.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>equal</symbol1>
+            <value1>12</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>12.0</class_value>
+        </condition>
+         <condition>
+            <symbol1>greaterequal</symbol1>
+            <value1>13</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>13.0</class_value>
+        </condition>
+         
+    </categorization>
+    
+    <categorization>
+        <name_categorization>Dangerousness</name_categorization>
+        <description>1 | 100 lessequaltotal | dangerous\n 2 | total less 100 | not dangerous\n</description>
+        <number_conditions>2</number_conditions>
+        <number_classes>2</number_classes>
+        <condition>
+            <symbol1>greaterequal</symbol1>
+            <value1>100</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>1.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>less</symbol1>
+            <value1>100</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>2.0</class_value>
+        </condition>
+    </categorization>
+</gtsvformat>

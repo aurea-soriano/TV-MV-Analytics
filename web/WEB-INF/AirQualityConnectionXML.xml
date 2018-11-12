@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+
+<gtsvformat>
+    <connection>
+        <ipserver>127.0.0.1</ipserver>
+        <driver>org.postgresql.Driver</driver>
+        <prefix>jdbc:postgresql://</prefix>
+        <port>5432</port>
+        <database>airquality</database>
+        <user>aurea</user>
+        <password>arsv</password>
+    </connection>
+    
+    <tablenames>
+        <attributetable>
+            <tablename>airquality_attribute</tablename>
+            <id>airquality_attribute_id</id>
+            <name>airquality_attribute_name</name>
+            <category>airquality_attribute_category</category>
+        </attributetable>
+        
+        <source1table>
+            <tablename>device</tablename>
+            <id>device_id</id>
+            <name>device_name</name>
+            <description>device_description</description>
+            <category>device_category</category>
+        </source1table>
+ 
+        <source2table>
+            <tablename></tablename>
+            <id></id>
+            <name></name>
+            <description></description>
+        </source2table>
+ 
+        <instancetable>
+            <tablename>instance</tablename>
+            <id>instance_id</id>
+            <source1_id>device_id</source1_id>
+            <source2_id></source2_id>
+            <time_utc>instance_time</time_utc>
+            <threshold_attribute></threshold_attribute>
+            <threshold_attribute_name></threshold_attribute_name>
+            <threshold_attribute_options>
+                <value></value>
+            </threshold_attribute_options>
+        </instancetable>
+    </tablenames>
+    
+    <interface_settings>
+        <time_ranges>
+            <row_unit>day</row_unit>
+        </time_ranges>
+        
+        <time_unit_options>
+            <value>minute</value>
+        </time_unit_options>
+        <time_unit_options>
+            <value>hour</value>
+        </time_unit_options>
+        <aggregation_function_options>
+            <value>max</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>avg</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>min</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>std</value>
+        </aggregation_function_options>
+        <aggregation_function_options>
+            <value>median</value>
+        </aggregation_function_options>
+    </interface_settings>
+    <functions_postgresql>
+        <data_maxfunction_timeinterval_threshold></data_maxfunction_timeinterval_threshold>
+        <data_minfunction_timeinterval_threshold></data_minfunction_timeinterval_threshold>
+        <data_avgfunction_timeinterval_threshold></data_avgfunction_timeinterval_threshold>
+        <data_stdfunction_timeinterval_threshold></data_stdfunction_timeinterval_threshold>
+        <data_medianfunction_timeinterval_threshold></data_medianfunction_timeinterval_threshold>
+        <data_maxfunction_timeinterval>getmaxbytimeinterval</data_maxfunction_timeinterval>
+        <data_minfunction_timeinterval>getminbytimeinterval</data_minfunction_timeinterval>
+        <data_avgfunction_timeinterval>getavgbytimeinterval</data_avgfunction_timeinterval>
+        <data_stdfunction_timeinterval>getstdbytimeinterval</data_stdfunction_timeinterval>
+        <data_medianfunction_timeinterval>getmedianbytimeinterval</data_medianfunction_timeinterval>
+        <data_maxfunction_timeinterval_threshold_forallsource1></data_maxfunction_timeinterval_threshold_forallsource1>
+        <data_minfunction_timeinterval_threshold_forallsource1></data_minfunction_timeinterval_threshold_forallsource1>
+        <data_avgfunction_timeinterval_threshold_forallsource1></data_avgfunction_timeinterval_threshold_forallsource1>
+        <data_stdfunction_timeinterval_threshold_forallsource1></data_stdfunction_timeinterval_threshold_forallsource1>
+        <data_medianfunction_timeinterval_threshold_forallsource1></data_medianfunction_timeinterval_threshold_forallsource1>
+        <data_maxfunction_timeinterval_forallsource1>getmaxbytimeintervalforalldevices</data_maxfunction_timeinterval_forallsource1>
+        <data_minfunction_timeinterval_forallsource1>getminbytimeintervalforalldevices</data_minfunction_timeinterval_forallsource1>
+        <data_avgfunction_timeinterval_forallsource1>getavgbytimeintervalforalldevices</data_avgfunction_timeinterval_forallsource1>
+        <data_stdfunction_timeinterval_forallsource1>getstdbytimeintervalforalldevices</data_stdfunction_timeinterval_forallsource1>
+        <data_medianfunction_timeinterval_forallsource1>getmedianbytimeintervalforalldevices</data_medianfunction_timeinterval_forallsource1>
+        <data_maxminfunction_timeinterval_threshold></data_maxminfunction_timeinterval_threshold>
+        <data_maxminfunction_timeinterval_threshold_forallsource1></data_maxminfunction_timeinterval_threshold_forallsource1>
+        <data_maxminfunction_timeinterval>getmaxandminvalueclassificationbyintervaldates</data_maxminfunction_timeinterval>
+        <data_maxminfunction_timeinterval_forallsource1>getmaxandminvalueclassificationbyintervaldatesforallsource1</data_maxminfunction_timeinterval_forallsource1>
+        <data_by_timeinterval_threshold></data_by_timeinterval_threshold>
+        <data_by_timeinterval_threshold_forallsource1></data_by_timeinterval_threshold_forallsource1>
+        <data_by_timeinterval>getdatabyintervaldates</data_by_timeinterval>
+        <data_by_timeinterval_forallsource1>getdatabyintervaldatesforallsource1</data_by_timeinterval_forallsource1>
+    </functions_postgresql>
+    
+    
+    <categorization>
+        <name_categorization>Relative Humidity</name_categorization>
+        <description>1 | 80  less relative_humidity  | very high\n 2 | 50 lessequal relative_humidity lessequal 80 | high\n 3 |  relative_humidity less 50 | low\n</description>
+        <number_conditions>3</number_conditions>
+        <number_classes>3</number_classes>
+        <condition>
+            <symbol1>greater</symbol1>
+            <value1>80</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>1.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>greaterequal</symbol1>
+            <value1>50</value1>
+            <symbol2>lessequal</symbol2>
+            <value2>80</value2>
+            <class_value>2.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>less</symbol1>
+            <value1>50</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>3.0</class_value>
+        </condition>
+    </categorization>
+    <categorization>
+        <name_categorization>Temperature</name_categorization>
+        <description>1 | 35 less temperature  |  extremely_hot\n 2 | 28 less temperature lessequal 35 |  hot\n 3 | 21 less temperature lessequal 28 |  warn\n 4 | 14 less temperature lessequal 21 |  mild\n 5 | 7 less temperature lessequal 14 |  cool\n 6 | temperature lessequal 7 | very_cold\n</description>
+        <number_conditions>6</number_conditions>
+        <number_classes>6</number_classes>
+        <condition>
+            <symbol1>greater</symbol1>
+            <value1>35</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>1.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>greater</symbol1>
+            <value1>28</value1>
+            <symbol2>lessequal</symbol2>
+            <value2>35</value2>
+            <class_value>2.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>greater</symbol1>
+            <value1>21</value1>
+            <symbol2>lessequal</symbol2>
+            <value2>28</value2>
+            <class_value>3.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>greater</symbol1>
+            <value1>14</value1>
+            <symbol2>lessequal</symbol2>
+            <value2>21</value2>
+            <class_value>4.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>greater</symbol1>
+            <value1>7</value1>
+            <symbol2>lessequal</symbol2>
+            <value2>14</value2>
+            <class_value>5.0</class_value>
+        </condition>
+        <condition>
+            <symbol1>lessequal</symbol1>
+            <value1>14</value1>
+            <symbol2></symbol2>
+            <value2></value2>
+            <class_value>6.0</class_value>
+        </condition>
+    </categorization>
+</gtsvformat>

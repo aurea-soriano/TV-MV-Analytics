@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+<head>
+<title> </title>
+<style type="text/css">
+div {
+background-color: #f1f1f1;
+width: 150px;
+color: black;
+border: #0000cc 2px dashed;
+display: none;
+}
+</style>
+
+<script language="JavaScript">
+function setVisibility(id, visibility) {
+document.getElementById(id).style.display = visibility;
+}
+</script>
+
+</head>
+<body >
+
+<input type=button name=type value='Show Layer' onclick="setVisibility('sub3', 'inline');";><input type=button name=type value='Hide Layer' onclick="setVisibility('sub3', 'none');";>
+<br><br>
+
+You can place your mouse over this image -> <img src='graph.jpg' onmouseout="setVisibility('sub3', 'none');" onmouseover="setVisibility('sub3', 'inline');";>
+<div id="sub3" style="position: relative; ">Message Box : </div>
+
+<br><br><br><br> 
+You can see the help menu on mouseover of this image -> <img src='graph.jpg' onmouseover="setVisibility('sub4', 'inline');";> 
+<div id="sub4" style="position: relative;" >Message Box : <a href=# onclick="setVisibility('sub4', 'none');";>Close</a></div>
+</body>
+</html>
